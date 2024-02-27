@@ -242,6 +242,22 @@ npx prisma init
    ```
 
 4. **main/production branch push**
+```bash
+# main repository에서 production branch 생성 
+git checkout -b production
+
+#main과 merge
+git merge main
+
+#원격 저장소에 production branch 추가
+git push -u origin production
+
+# 로컬 및 원격 브랜치 모두 보기
+git branch -a
+
+
+```
+
 
 ### EC2 배포
 
