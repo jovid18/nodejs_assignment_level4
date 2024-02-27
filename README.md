@@ -132,7 +132,7 @@ git checkout man
 yarn init
 
 # Dependencies
-yarn add @prisma/client express prisma bcrypt cookie-parser express-mysql-session jsonwebtoken joi
+yarn add @prisma/client express prisma bcrypt cookie-parser express-mysql-session jsonwebtoken joi express-session
 
 # DevDependencies
 yarn add dotenv nodemon --dev
@@ -158,6 +158,7 @@ npx prisma init
     "cookie-parser": "^1.4.6",
     "express": "^4.18.2",
     "express-mysql-session": "^3.0.0",
+    "express-session": "^1.18.0",
     "joi": "^17.12.2",
     "jsonwebtoken": "^9.0.2",
     "prisma": "^5.10.2"
@@ -178,46 +179,67 @@ npx prisma init
        url      = env("DATABASE_URL")
      }
      ```
-   - .env 파일 수정
+   - .env 파일 작성
      ```plaintext
-     DATABASE_URL="mysql://[사용자 이름]:[암호]@[RDS 엔드포인트]:3306/nodejslv3"
+     DATABASE_URL="mysql://[사용자 이름]:[암호]@[RDS 엔드포인트]:3306/nodejslv4"
      PORT=3000
      ```
    - 과제 요구사항에 맞게 프로젝트 폴더 및 파일 생성
+
+     - lv4 과제에서는 기존의 lv3 프로젝트의 내용을 복사해서 사용
+     - 사장님 토큰을 검증하기 위한 auth.middleware.js 파일 추가
+     - signin과 signup을 router를 위한 user.router.js 파일 추가
+     - app.js 파일 추가 및 위치 변경(src 폴더 내로)
+     - utils\index.js를 utils\prisma\index.js로 위치 변경
+
    - app.js 파일 작성
 
-     ```javascript
-     import express from "express";
-     import dotenv from "dotenv";
-     //import CategoryRouter from "./routes/category.router.js";
-     //import MenuRouter from "./routes/reviews.router.js";
-     dotenv.config();
+   ```javascript
+   import express from 'express';
+   import cookieParser from 'cookie-parser';
+   import expressSession from 'express-session';
+   import expressMysqlSession from 'express-mysql-session';
+   import dotenv from 'dotenv';
+   import CategoryRouter from './routes/category.router.js';
+   import MenuRouter from './routes/menu.router.js';
+   import UserRouter from './routes/user.router.js';
+   import notFoundErrorHandler from './middlewares/notFoundError.middleware.js';
+   import generalErrorHandler from './middlewares/generalError.middleware.js';
 
-     const app = express();
-     const PORT = process.env;
+   dotenv.config();
 
-     app.use(express.json());
-     app.use(express.urlencoded({ extended: false }));
+   const app = express();
+   const PORT = process.env.PORT;
 
-     app.get("/", (req, res) => {
-       res.send("<h1>3차과제</h1>");
-     });
+   app.use(express.json());
+   app.use(cookieParser());
+   app.use(express.urlencoded({ extended: false }));
+   app.get('/', (req, res) => {
+     res.send('<h1>4차과제</h1>');
+   });
 
-     app.listen(PORT, () => {
-       console.log(PORT, "포트로 서버가 열렸어요!");
-     });
-     ```
+   app.use('/api', UserRouter);
+   app.use('/api/categories', [CategoryRouter, MenuRouter]);
+
+   app.use(notFoundErrorHandler);
+   app.use(generalErrorHandler);
+
+   app.listen(PORT, () => {
+     console.log(PORT, '포트로 서버가 열렸어요!');
+   });
+   ```
 
    - .prettierrc 파일 추가
-     ```json
-     {
-       "singleQuote": true,
-       "trailingComma": "es5",
-       "tapWidth": 2,
-       "semi": true,
-       "arrowParens": "always"
-     }
-     ```
+
+   ```json
+   {
+     "singleQuote": true,
+     "trailingComma": "es5",
+     "tapWidth": 2,
+     "semi": true,
+     "arrowParens": "always"
+   }
+   ```
 
 4. **main/production branch push**
 
@@ -225,7 +247,7 @@ npx prisma init
 
 1. **EC2 인스턴스 생성**
 
-- 이름 : nodejslv3
+- 이름 : nodejslv4
 - OS image : Ubuntu
 - 인스턴스 유형: t2.micro
 - 기존 키페어 사용: pem 파일
