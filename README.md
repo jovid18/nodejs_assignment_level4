@@ -8,7 +8,7 @@
 
 ## 프로젝트 링크
 
-[Nodejslv4](#)
+[Nodejslv4](http://54.180.109.189:3000/)
 
 ## 프로젝트 진행
 
@@ -287,7 +287,7 @@ npm -v
 
 ```bash
 # 프로젝트 클론
-git clone https://github.com/jovid18/nodejs_assignment_level3.git
+git clone https://github.com/jovid18/nodejs_assignment_level4.git
 # yarn 설치
 sudo npm install -g yarn
 # 패키지 설치
