@@ -35,14 +35,13 @@ router.get('/', async (req, res, next) => {
 router.post('/', ownerauth, async (req, res, next) => {
   try {
     //없으면
-
-    if (!req.body) {
+  let { name } = req.body;
+    if (!name) {
       return (
         res.status(400),
         json({ errorMessage: '데이터 형식이 올바르지 않습니다' })
       );
     }
-    let { name } = req.body;
     const validationResult = schemas.validate({ name });
     if (validationResult.error) {
       return res
@@ -69,7 +68,7 @@ router.put('/:categoryId', ownerauth, async (req, res, next) => {
   try {
     let { categoryId } = req.params;
     const { name, order } = req.body;
-    if (!req.params || !req.body) {
+    if (!categoryId || !name || !order) {
       return res
         .status(400)
         .json({ message: '데이터 형식이 올바르지 않습니다.' });
@@ -101,7 +100,7 @@ router.put('/:categoryId', ownerauth, async (req, res, next) => {
 router.delete('/:categoryId', ownerauth, async (req, res, next) => {
   try {
     let { categoryId } = req.params;
-    if (!req.params) {
+    if (!categoryId) {
       return res
         .status(400)
         .json({ message: '데이터 형식이 올바르지 않습니다.' });
