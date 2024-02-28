@@ -16,7 +16,7 @@ const schemas = Joi.object({
 //카테고리 전체 조회
 router.get('/', async (req, res, next) => {
   try {
-    let category = await prisma.Categories.findMany({
+    let category = await prisma.categories.findMany({
       select: {
         categoryId: true,
         name: true,
@@ -49,11 +49,11 @@ router.post('/', ownerauth, async (req, res, next) => {
         .status(404)
         .json({ message: '데이터 형식이 올바르지 않습니다.' });
     }
-    const lastCategory = await prisma.Categories.findFirst({
+    const lastCategory = await prisma.categories.findFirst({
       orderBy: { order: 'desc' },
     });
     const order = lastCategory ? lastCategory.order + 1 : 1;
-    let category = await prisma.Categories.create({
+    let category = await prisma.categories.create({
       data: {
         name,
         order,
@@ -80,13 +80,13 @@ router.put('/:categoryId', ownerauth, async (req, res, next) => {
         .status(404)
         .json({ message: '데이터 형식이 올바르지 않습니다.' });
     }
-    let categoryfind = await prisma.Categories.findFirst({
+    let categoryfind = await prisma.categories.findFirst({
       where: { categoryId: +categoryId },
     });
     if (!categoryfind) {
       return res.status(404).json({ message: '존재하지 않는 카테고리입니다' });
     }
-    let updateOne = await prisma.Categories.update({
+    let updateOne = await prisma.categories.update({
       data: { name, order },
       where: {
         categoryId: +categoryId,
@@ -106,14 +106,15 @@ router.delete('/:categoryId', ownerauth, async (req, res, next) => {
         .status(400)
         .json({ message: '데이터 형식이 올바르지 않습니다.' });
     }
-    await prisma.Menus.deleteMany({
-      where: {
-        categoryId: +categoryId,
-      },
-    });
-    let deleteOne = await prisma.Categories.delete({
+    // await prisma.menus.deleteMany({
+    //   where: {
+    //     categoryId: +categoryId,
+    //   },
+    // });
+    let deleteOne = await prisma.categories.delete({
       where: { categoryId: +categoryId },
     });
+
     if (!deleteOne) {
       return res.status(404).json({ message: '존재하지 않는 카테고리입니다' });
     }
