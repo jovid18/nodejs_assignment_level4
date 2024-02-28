@@ -13,6 +13,20 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum UserType {
+  CUSTOMER
+  OWNER
+}
+
+model Users {
+  nickname String   @id @map("nickname")
+  password String   @map("password")
+  usertype UserType @default(CUSTOMER) @map("usertype")
+
+  @@map("Users")
+}
+
+
 model Categories {
   categoryId Int    @id @default(autoincrement()) @map("categoryId")
   name       String @map("name")
