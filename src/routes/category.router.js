@@ -2,7 +2,7 @@ import express from 'express';
 import Joi from 'joi';
 const router = express.Router();
 import { prisma } from '../utils/prisma/index.js';
-import authMiddleware from '../middlewares/auth.middleware.js';
+import { ownerauth, customerauth } from '../middlewares/auth.middleware.js';
 
 //유효성 검사 위한 스키마 (수정시 사용함)
 const schema = Joi.object({
@@ -32,7 +32,7 @@ router.get('/', async (req, res, next) => {
   }
 });
 
-router.post('/', async (req, res, next) => {
+router.post('/', ownerauth, async (req, res, next) => {
   try {
     //없으면
 
@@ -65,7 +65,7 @@ router.post('/', async (req, res, next) => {
   }
 });
 
-router.put('/:categoryId', async (req, res, next) => {
+router.put('/:categoryId', ownerauth, async (req, res, next) => {
   try {
     let { categoryId } = req.params;
     const { name, order } = req.body;
@@ -98,7 +98,7 @@ router.put('/:categoryId', async (req, res, next) => {
   }
 });
 
-router.delete('/:categoryId', async (req, res, next) => {
+router.delete('/:categoryId', ownerauth, async (req, res, next) => {
   try {
     let { categoryId } = req.params;
     if (!req.params) {

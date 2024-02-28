@@ -1,7 +1,7 @@
 import express from 'express';
 import Joi from 'joi';
 import { prisma } from '../utils/prisma/index.js';
-import authMiddleware from '../middlewares/auth.middleware.js';
+import { ownerauth, customerauth } from '../middlewares/auth.middleware.js';
 
 const router = express.Router();
 // 검증을 위한  Joi schema 정의
@@ -26,7 +26,7 @@ const menuStatusSchema = Joi.object({
   order: Joi.number().integer().required(),
   status: Joi.string().valid('FOR_SALE', 'SOLD_OUT').required(),
 });
-router.post('/:categoryId/menus', async (req, res, next) => {
+router.post('/:categoryId/menus', ownerauth, async (req, res, next) => {
   try {
     if (!req.body || !req.params) {
       return res
@@ -188,7 +188,7 @@ router.get('/:categoryId/menus/:menuId', async (req, res, next) => {
   }
 });
 
-router.put('/:categoryId/menus/:menuId', async (req, res, next) => {
+router.put('/:categoryId/menus/:menuId', ownerauth, async (req, res, next) => {
   try {
     if (!req.params || !req.body) {
       return res
@@ -251,43 +251,49 @@ router.put('/:categoryId/menus/:menuId', async (req, res, next) => {
   }
 });
 
-router.delete('/:categoryId/menus/:menuId', async (req, res, next) => {
-  try {
-    if (!req.params) {
-      return res
-        .status(400)
-        .json({ message: '데이터 형식이 올바르지 않습니다.' });
+router.delete(
+  '/:categoryId/menus/:menuId',
+  ownerauth,
+  async (req, res, next) => {
+    try {
+      if (!req.params) {
+        return res
+          .status(400)
+          .json({ message: '데이터 형식이 올바르지 않습니다.' });
+      }
+      const { error: paramsError } = caregoryandmenuSchema.validate(req.params);
+      if (paramsError) {
+        return res
+          .status(400)
+          .json({ message: '데이터 형식이 올바르지 않습니다.' });
+      }
+      const category = await prisma.Categories.findFirst({
+        where: {
+          categoryId: +req.params.categoryId,
+        },
+      });
+      if (!category) {
+        return res
+          .status(404)
+          .json({ message: '존재하지 않는 카테고리입니다.' });
+      }
+      const menu = await prisma.Menus.findFirst({
+        where: {
+          menuId: +req.params.menuId,
+        },
+      });
+      if (!menu) {
+        return res.status(404).json({ message: '존재하지 않는 메뉴입니다.' });
+      }
+      await prisma.Menus.delete({
+        where: {
+          menuId: +req.params.menuId,
+        },
+      });
+      return res.status(200).json({ message: '메뉴를 삭제하였습니다.' });
+    } catch (error) {
+      next(error);
     }
-    const { error: paramsError } = caregoryandmenuSchema.validate(req.params);
-    if (paramsError) {
-      return res
-        .status(400)
-        .json({ message: '데이터 형식이 올바르지 않습니다.' });
-    }
-    const category = await prisma.Categories.findFirst({
-      where: {
-        categoryId: +req.params.categoryId,
-      },
-    });
-    if (!category) {
-      return res.status(404).json({ message: '존재하지 않는 카테고리입니다.' });
-    }
-    const menu = await prisma.Menus.findFirst({
-      where: {
-        menuId: +req.params.menuId,
-      },
-    });
-    if (!menu) {
-      return res.status(404).json({ message: '존재하지 않는 메뉴입니다.' });
-    }
-    await prisma.Menus.delete({
-      where: {
-        menuId: +req.params.menuId,
-      },
-    });
-    return res.status(200).json({ message: '메뉴를 삭제하였습니다.' });
-  } catch (error) {
-    next(error);
   }
-});
+);
 export default router;
