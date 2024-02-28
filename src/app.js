@@ -1,11 +1,10 @@
 import express from 'express';
 import cookieParser from 'cookie-parser';
-import expressSession from 'express-session';
-import expressMysqlSession from 'express-mysql-session';
 import dotenv from 'dotenv';
 import CategoryRouter from './routes/category.router.js';
 import MenuRouter from './routes/menu.router.js';
 import UserRouter from './routes/user.router.js';
+import LogMiddleware from './middlewares/log.middleware.js';
 import notFoundErrorHandler from './middlewares/notFoundError.middleware.js';
 import generalErrorHandler from './middlewares/generalError.middleware.js';
 
@@ -14,6 +13,7 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT;
 
+app.use(LogMiddleware);
 app.use(express.json());
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: false }));

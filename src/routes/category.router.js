@@ -35,7 +35,7 @@ router.get('/', async (req, res, next) => {
 router.post('/', ownerauth, async (req, res, next) => {
   try {
     //없으면
-  let { name } = req.body;
+    let { name } = req.body;
     if (!name) {
       return (
         res.status(400),

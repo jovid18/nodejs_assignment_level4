@@ -15,7 +15,8 @@
     "express-session": "^1.18.0",
     "joi": "^17.12.2",
     "jsonwebtoken": "^9.0.2",
-    "prisma": "^5.10.2"
+    "prisma": "^5.10.2",
+    "winston": "^3.11.0"
   },
   "devDependencies": {
     "dotenv": "^16.4.5",

@@ -19,6 +19,7 @@ const userauthmiddle = (requiredType) => {
           nickname: nickname,
         },
       });
+
       if (!user) {
         throw new Error('존재하지 않는 사용자입니다.');
       }
