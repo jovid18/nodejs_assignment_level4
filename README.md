@@ -6,6 +6,10 @@
 2. **회원가입/로그인 API 구현하기**
 3. **로그인 토큰을 검사 미들웨어 추가**
 
+## ERD 작성
+[ERDlink](https://drawsql.app/teams/cshcho99s-team/diagrams/nodejslv4)
+![drawSQL-image-export-2024-02-29 (1)](https://github.com/soijeongg/nodejs_assignment_level5/assets/143411145/b2d9e720-b34d-4cef-af12-21b05c3227a1)
+
 ## 프로젝트 링크
 
 [Nodejslv4](http://54.180.109.189:3000/)
