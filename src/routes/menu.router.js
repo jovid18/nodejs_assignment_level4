@@ -30,10 +30,10 @@ router.post('/:categoryId/menus', ownerauth, async (req, res, next) => {
   try {
     const { error: categoryError } = categorySchema.validate(req.params);
     if (categoryError) {
-      return res
-        .status(400)
-        .json({ message: '데이터 형식이 올바르지 않습니다.' });
-    }
+      const error = new Error('데이터 형식이 올바르지 않습니다.');
+      error.status = 400;
+       throw error;
+     }
     const { error: bodyError } = menuSchema.validate(req.body);
     if (bodyError) {
       const isPriceInvalid = bodyError.details.some(
@@ -41,13 +41,13 @@ router.post('/:categoryId/menus', ownerauth, async (req, res, next) => {
           detail.path.includes('price') && detail.type === 'number.min'
       );
       if (isPriceInvalid) {
-        return res
-          .status(400)
-          .json({ message: '메뉴 가격은 0보다 작을 수 없습니다.' });
+        const error = new Error('메뉴 가격은 0보다 작을 수 없습니다.');
+        error.status = 400;
+        throw error;
       }
-      return res
-        .status(400)
-        .json({ message: '요청 데이터 형식이 올바르지 않습니다.' });
+      const error = new Error('데이터 형식이 올바르지 않습니다.');
+      error.status = 400;
+      throw error;
     }
     const categoryId = +req.params.categoryId;
     console.log(categoryId);
@@ -57,7 +57,9 @@ router.post('/:categoryId/menus', ownerauth, async (req, res, next) => {
       },
     });
     if (!category) {
-      return res.status(404).json({ message: '존재하지 않는 카테고리입니다.' });
+      const error = new Error('존재하지 않는 카테고리입니다.')
+      error.status = 404;
+      throw new error;
     }
     const lastMenu = await prisma.menus.findFirst({
       where: {
@@ -89,9 +91,9 @@ router.get('/:categoryId/menus', async (req, res, next) => {
   try {
     const { error: categoryError } = categorySchema.validate(req.params);
     if (categoryError) {
-      return res
-        .status(400)
-        .json({ message: '데이터 형식이 올바르지 않습니다.' });
+     const error = new Error('데이터 형식이 올바르지 않습니다.');
+     error.status = 400;
+     throw error;
     }
     const categoryId = +req.params.categoryId;
     const category = await prisma.categories.findFirst({
@@ -100,7 +102,9 @@ router.get('/:categoryId/menus', async (req, res, next) => {
       },
     });
     if (!category) {
-      return res.status(404).json({ message: '존재하지 않는 카테고리입니다.' });
+      const error = new Error('존재하지 않는 카테고리입니다.');
+      error.status = 404;
+      throw error;
     }
     const menus = await prisma.menus.findMany({
       where: {
@@ -132,9 +136,9 @@ router.get('/:categoryId/menus/:menuId', async (req, res, next) => {
   try {
     const { error: paramsError } = caregoryandmenuSchema.validate(req.params);
     if (paramsError) {
-      return res
-        .status(400)
-        .json({ message: '데이터 형식이 올바르지 않습니다.' });
+      const error = new Error('데이터 형식이 올바르지 않습니다.');
+      error.status = 400;
+      throw error;
     }
     const category = await prisma.categories.findFirst({
       where: {
@@ -142,9 +146,10 @@ router.get('/:categoryId/menus/:menuId', async (req, res, next) => {
       },
     });
     if (!category) {
-      return res.status(404).json({ message: '존재하지 않는 카테고리입니다.' });
+      const error = new Error('존재하지 않는 카테고리입니다.');
+      error.status = 404;
+      throw error;
     }
-    const { error: bodyError } = menuSchema.validate(req.body);
     const menu = await prisma.menus.findFirst({
       where: {
         menuId: +req.params.menuId,
@@ -160,7 +165,9 @@ router.get('/:categoryId/menus/:menuId', async (req, res, next) => {
       },
     });
     if (!menu) {
-      return res.status(404).json({ message: '존재하지 않는 메뉴입니다.' });
+      const error = new Error("존재하지 않는 메뉴입니다,")
+      error.status = 404;
+      throw error;
     }
     const revisedMenu = {
       id: menu.menuId,
@@ -177,9 +184,9 @@ router.put('/:categoryId/menus/:menuId', ownerauth, async (req, res, next) => {
   try {
     const { error: paramsError } = caregoryandmenuSchema.validate(req.params);
     if (paramsError) {
-      return res
-        .status(400)
-        .json({ message: '데이터 형식이 올바르지 않습니다.' });
+     const error = new Error('데이터 형식이 올바르지 않습니다.');
+     error.status = 400;
+     throw error;
     }
     const { error: bodyError } = menuStatusSchema.validate(req.body);
     if (bodyError) {
@@ -188,13 +195,13 @@ router.put('/:categoryId/menus/:menuId', ownerauth, async (req, res, next) => {
           detail.path.includes('price') && detail.type === 'number.min'
       );
       if (isPriceInvalid) {
-        return res
-          .status(400)
-          .json({ message: '메뉴 가격은 0보다 작을 수 없습니다.' });
+        const error = new Error("메뉴 가격은 0보다 작을 수 없습니다.")
+        error.status = 400;
+        throw error;
       }
-      return res
-        .status(400)
-        .json({ message: '요청 데이터 형식이 올바르지 않습니다.' });
+      const error = new Error('데이터 형식이 올바르지 않습니다.');
+      error.status = 400;
+      throw error;
     }
     const category = await prisma.categories.findFirst({
       where: {
@@ -202,7 +209,9 @@ router.put('/:categoryId/menus/:menuId', ownerauth, async (req, res, next) => {
       },
     });
     if (!category) {
-      return res.status(404).json({ message: '존재하지 않는 카테고리입니다.' });
+      const error = new Error("존재하지 않는 카테고리입니다")
+      error.status = 404;
+      throw error;
     }
     const menu = await prisma.menus.findFirst({
       where: {
@@ -210,7 +219,9 @@ router.put('/:categoryId/menus/:menuId', ownerauth, async (req, res, next) => {
       },
     });
     if (!menu) {
-      return res.status(404).json({ message: '존재하지 않는 메뉴입니다.' });
+      const error = new Error("존재하지 않는 메뉴 입니다.")
+      error.status = 404;
+      throw error;
     }
     await prisma.menus.update({
       where: {
@@ -238,9 +249,9 @@ router.delete(
     try {
       const { error: paramsError } = caregoryandmenuSchema.validate(req.params);
       if (paramsError) {
-        return res
-          .status(400)
-          .json({ message: '데이터 형식이 올바르지 않습니다.' });
+       const error = new Error('데이터 형식이 올바르지 않습니다.');
+       error.status = 400;
+       throw error;
       }
       const category = await prisma.categories.findFirst({
         where: {
@@ -248,9 +259,9 @@ router.delete(
         },
       });
       if (!category) {
-        return res
-          .status(404)
-          .json({ message: '존재하지 않는 카테고리입니다.' });
+        const error = new Error("존재하지 않는 카테고리입니다")
+        error.status = 404;
+        throw error;
       }
       const menu = await prisma.menus.findFirst({
         where: {
@@ -258,7 +269,9 @@ router.delete(
         },
       });
       if (!menu) {
-        return res.status(404).json({ message: '존재하지 않는 메뉴입니다.' });
+        const error = new Error("존재하지 않는 메뉴입니다.")
+        error.status = 404;
+        throw error;
       }
       await prisma.menus.delete({
         where: {
