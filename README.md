@@ -8,7 +8,7 @@
 
 ## ERD 작성
 [ERDlink](https://drawsql.app/teams/cshcho99s-team/diagrams/nodejslv4)
-![drawSQL-image-export-2024-02-29 (1)](https://github.com/soijeongg/nodejs_assignment_level5/assets/143411145/b2d9e720-b34d-4cef-af12-21b05c3227a1)
+![drawSQL-image-export-2024-03-01 (1)](https://github.com/jovid18/nodejs_assignment_level4/assets/143411145/266a3c1c-1ba1-4e73-855d-c459fa5182b5)
 
 ## 프로젝트 링크
 
